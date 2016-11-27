@@ -119,45 +119,57 @@ public class OSBConfigMojo extends AbstractMojo
 	
 	private static final String DEFAULT_JAVA_EXE="${osbconfig.javahome}/bin/java";
 	private static final String PROPERTY_JAVA_EXE="osbconfig.javaexe";
+	@Parameter(property = PROPERTY_JAVA_EXE, defaultValue=DEFAULT_JAVA_EXE)
 	/**
 	 * The explicit executable to use. It defaults to bin/java under the current JAVA_HOME. setting it without any path prefix with use the PATH environment variable to find it. 
 	 */
-	@Parameter(property = PROPERTY_JAVA_EXE, defaultValue=DEFAULT_JAVA_EXE)
 	private String javaExecutable;
 	
 	private static final String DEFAULT_OSBCONFIG_WORK_ROOT="${project.build.directory}/osbconfig-workdir";
 	private static final String PROPERTY_OSBCONFIG_WORK_ROOT="osbconfig.workroot";
 	@Parameter(property = PROPERTY_OSBCONFIG_WORK_ROOT, defaultValue=DEFAULT_OSBCONFIG_WORK_ROOT)
+	/**
+	 * The private directory for this pluging to use, typically under the project.build.directory
+	 */
 	private String workRoot;
 	
 	private static final String DEFAULT_OSBCONFIG_TMP_DIR="${osbconfig.workroot}/tmp";
 	private static final String PROPERTY_OSBCONFIG_TMP_DIR="osbconfig.tmpdir";
 	@Parameter(property = PROPERTY_OSBCONFIG_TMP_DIR, defaultValue=DEFAULT_OSBCONFIG_TMP_DIR)
+	/**
+	 * The temporary directory to be use by the plugin.
+	 */
 	private String tmpDir;
 	
 	private static final String DEFAULT_OSBCONFIG_WORK_DIR="${osbconfig.workroot}/run";
 	private static final String PROPERTY_OSBCONFIG_WORK_DIR="osbconfig.workdir";
 	@Parameter(property = PROPERTY_OSBCONFIG_WORK_DIR, defaultValue=DEFAULT_OSBCONFIG_WORK_DIR)
+	/**
+	 * The working current directory when running Oracle Service Bus commands.
+	 */
 	private String workDir;
 	
 	private static final String DEFAULT_OSBCONFIG_SETTINGS_FILE="${osbconfig.workroot}/etc/settings.xml";
 	private static final String PROPERTY_OSBCONFIG_SETTINGS_FILE="osbconfig.settingsfile";
 	@Parameter(property = PROPERTY_OSBCONFIG_SETTINGS_FILE, defaultValue=DEFAULT_OSBCONFIG_SETTINGS_FILE)
+	/**
+	 * The settings file to use for the config jar tool.
+	 */
 	private String settingsFile;
 	
 	protected void postProcess() throws MojoExecutionException
 	{
 		try
 		{
+			Log log = getLog();
+
 			Properties props = mavenProject.getProperties();
 			if (props == null)
 			{
-				getLog().warn("Null properties?");
+				log.warn("Null properties?");
 				return;
 			}
-			
-			Log log = getLog();
-	
+
 			PluginParameterExpressionEvaluator ppee = new PluginParameterExpressionEvaluator( mavenSession, mojoExecution );
 	
 			PostProcessor pp=new PostProcessor();
